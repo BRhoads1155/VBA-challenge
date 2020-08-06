@@ -1,0 +1,98 @@
+Sub VBAofWallStreet()
+
+Cells(1, 9).Value = "Ticker"
+Cells(1, 10).Value = "Yearly Change"
+Cells(1, 11).Value = "Percent Change"
+Cells(1, 12).Value = "Total Stock Volume"
+
+' Set an initial variable for holding the stock name
+Dim stock_name As String
+
+'Set an initial variable for holding the stock opening price
+Dim open_price As Double
+open_price = 0
+
+'Set an initial variable for holding the stock closing price
+Dim closing_price As Double
+closing_price = 0
+
+'Set an initial variable for holding stock volume
+Dim stock_volume As Double
+stock_volume = 0
+
+Dim Summary_Table_Row As Integer
+Summary_Table_Row = 2
+
+Dim yearly_change As Double
+
+Dim percent_change As Double
+
+Dim LastRow As Double
+
+LastRow = Cells.Find(What:="*", _
+                    After:=Range("A1"), _
+                    LookAt:=xlPart, _
+                    LookIn:=xlFormulas, _
+                    SearchOrder:=xlByRows, _
+                    SearchDirection:=xlPrevious, _
+                    MatchCase:=False).Row
+
+
+'Loop through all stocks
+For i = 2 To LastRow
+
+' Check if we are still within the same stock name
+If Cells(i + 1, 1).Value <> Cells(i, 1).Value Then
+
+    'If it is not, set the stock name
+    stock_name = Cells(i, 1).Value
+
+    'add to the stock total
+    stock_volume = stock_volume + Cells(i, 7).Value
+
+    'add to the yearly change
+    
+    
+    open_price = Cells(i, 3).Value
+
+    closing_price = Cells(i, 6).Value
+
+
+    'print the stock name in the summary table
+    Range("I" & Summary_Table_Row).Value = stock_name
+
+    'print the stock volume in the summary table
+    Range("L" & Summary_Table_Row).Value = stock_volume
+
+    'print the yearly change in the sumary table
+    Range("J" & Summary_Table_Row).Value = yearly_change
+
+    'Range("K" & Summary_Table_Row).Value. = percent_change
+    Range("K" & Summary_Table_Row).Value = yearly_change
+
+    'Add one to the summary table row
+    Summary_Table_Row = Summary_Table_Row + 1
+
+    'Reset the stock volume
+    stock_volume = 0
+
+    'reset the opening price
+    open_price = 0
+
+    'reset the closing price
+    closing_price = 0
+
+'if the cell immediately following a row is the same stock...
+Else
+
+'add to the stock total
+stock_volume = stock_volume + Cells(i, 7).Value
+
+yearly_change = yearly_change - closing_price + open_price
+
+End If
+
+Next i
+
+
+End Sub
